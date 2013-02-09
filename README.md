@@ -1,16 +1,82 @@
 LeapMotionP5
 ======================
-<b>A Leap Motion Library for Processing</b> 
+#### A Leap Motion Library for Processing
 
 Working with <b>all Processing versions</b> and <b>all operating systems (OSX, Windows)</b>, with the newest version of the leap motion sdk. Moreover it is including a variety of <b>gestures</b>.
 Just download the library archive at the bottom of this readme and extract it into the libraries folder of your processing sketchbook and your're ready to go.
 
-Features
-========
-<b>Gesture Recognition</b><br>
+API
+--------
+
+#### List of all available methods:
+
+LeapMotionP5(PApplet)
+
+void start()<br />
+void stop()<br />
+void update()<br />
+void addGesture(String)<br />
+
+Frame getFrame()<br />
+Frame getLastFrame()<br />
+LinkedList<Frame> getFrames()<br />
+LinkedList<Frame> getFrames(int)<br />
+
+ArrayList<Hand> getHandList()<br />
+ArrayList<Hand> getHandList(Frame)<br />
+Hand getHand(int)<br />
+float getPitch(Hand)<br />
+float getRoll(Hand)<br />
+float getYaw(Hand)<br />
+PVector getDirection(Hand)<br />
+PVector getVelocity(Hand)<br />
+PVector getPosition(Hand)<br />
+PVector getNormal(Hand)<br />
+
+ArrayList<Pointable> getPointableList()<br />
+ArrayList<Pointable> getPointableList(Frame)<br />
+ArrayList<Pointable> getPointableList(Hand)<br />
+Pointable getPointable(int)<br />
+
+ArrayList<Tool> getToolList()<br />
+ArrayList<Tool> getToolList(Frame)<br />
+ArrayList<Tool> getToolList(Hand)<br />
+Tool getTool(int)<br />
+
+ArrayList<Finger> getFingerList()<br />
+ArrayList<Finger> getFingerList(Frame)<br />
+ArrayList<Finger> getFingerList(Hand)<br />
+Finger getFinger(int)<br />
+
+PVector getTip(Pointable)<br />
+PVector getTip(Tool)<br />
+PVector getTip(Finger)<br />
+
+PVector getOrigin(Pointable)<br />
+PVector getOrigin(Tool)<br />
+PVector getOrigin(Finger)<br />
+
+PVector getVelocity(Pointable)<br />
+PVector getVelocity(Tool)<br />
+PVector getVelocity(Finger)<br />
+
+PVector getDirection(Pointable)<br />
+PVector getDirection(Tool)<br />
+PVector getDirection(Finger)<br />
+
+float getLength(Pointable)<br />
+float getLength(Tool)<br />
+float getLength(Finger)<br />
+
+float getWidth(Pointable)<br />
+float getWidth(Tool)<br />
+float getWidth(Finger)<br />
+
+Gesture Recognition
+-------------------
 It's possible to use a vast variety of gestures with the leap motion in processing.
 
-<b>One finger gestures:</b>
+#### One finger gestures:
 - swipe left
 - swipe right
 - swipe up
@@ -18,7 +84,13 @@ It's possible to use a vast variety of gestures with the leap motion in processi
 - push
 - pull
 
-<b>One finger drawing gestures:</b>
+#### Other:
+- onHandEnter
+- onHandLeave
+- onFingerEnter
+- onFingerLeave
+
+#### One finger drawing gestures:
 - circle
 - triangle
 - rectangle
@@ -39,12 +111,12 @@ It's possible to use a vast variety of gestures with the leap motion in processi
 <img src="http://depts.washington.edu/aimgroup/proj/dollar/unistrokes.gif"></img>
 
 Download
-========
+--------
 https://github.com/mrzl/LeapMotionP5/blob/master/LeapMotionP5.zip
 
 Examples
-========
-<b>Basic Example</b>
+--------
+#### Basic Example
 <pre>
 import com.onformative.leap.LeapMotionP5;
 import com.leapmotion.leap.Finger;
@@ -70,7 +142,7 @@ public void stop() {
 }
 </pre>
 
-<b>Gesture Recognition</b>
+#### Gesture Recognition
 <pre>
 import com.onformative.leap.LeapMotionP5;
 
@@ -83,28 +155,32 @@ public void setup() {
 
   leap = new LeapMotionP5(this);
   
-  leap.addGesture(leap.gestures.SWIPE_LEFT);
-  leap.addGesture(leap.gestures.SWIPE_RIGHT);
-  leap.addGesture(leap.gestures.SWIPE_UP);
-  leap.addGesture(leap.gestures.SWIPE_DOWN);
-  leap.addGesture(leap.gestures.PUSH);
-  leap.addGesture(leap.gestures.PULL);
-  leap.addGesture(leap.gestures.CIRCLE);
-  leap.addGesture(leap.gestures.TRIANGLE);
-  leap.addGesture(leap.gestures.RECTANGLE);
-  leap.addGesture(leap.gestures.ZIG_ZAG);
-  leap.addGesture(leap.gestures.X);
-  //leap.addGesture(leap.gestures.CHECK);
-  //leap.addGesture(leap.gestures.CHARET);
-  //leap.addGesture(leap.gestures.ARROW);
-  //leap.addGesture(leap.gestures.LEFT_CURLY_BRACKET);
-  //leap.addGesture(leap.gestures.RIGHT_CURLY_BRACKET);
-  //leap.addGesture(leap.gestures.LEFT_SQUARE_BRACKET);
-  //leap.addGesture(leap.gestures.RIGHT_SQUARE_BRACKET);
-  //leap.addGesture(leap.gestures.V);
-  //leap.addGesture(leap.gestures.DELETE);
-  //leap.addGesture(leap.gestures.STAR);
-  //leap.addGesture(leap.gestures.PIGTAIL);
+  leap.addGesture(leap.SWIPE_LEFT);
+  leap.addGesture(leap.SWIPE_RIGHT);
+  leap.addGesture(leap.SWIPE_UP);
+  leap.addGesture(leap.SWIPE_DOWN);
+  //leap.addGesture(leap.ON_HAND_ENTER);
+  //leap.addGesture(leap.ON_HAND_LEAVE);
+  //leap.addGesture(leap.ON_FINGER_ENTER);
+  //leap.addGesture(leap.ON_FINGER_LEAVE);
+  //leap.addGesture(leap.PUSH);
+  //leap.addGesture(leap.PULL);
+  leap.addGesture(leap.CIRCLE);
+  leap.addGesture(leap.TRIANGLE);
+  leap.addGesture(leap.RECTANGLE);
+  //leap.addGesture(leap.ZIG_ZAG);
+  //leap.addGesture(leap.X);
+  //leap.addGesture(leap.CHECK);
+  //leap.addGesture(leap.CHARET);
+  //leap.addGesture(leap.ARROW);
+  //leap.addGesture(leap.LEFT_CURLY_BRACKET);
+  //leap.addGesture(leap.RIGHT_CURLY_BRACKET);
+  //leap.addGesture(leap.LEFT_SQUARE_BRACKET);
+  //leap.addGesture(leap.RIGHT_SQUARE_BRACKET);
+  //leap.addGesture(leap.V);
+  //leap.addGesture(leap.DELETE);
+  //leap.addGesture(leap.STAR);
+  //leap.addGesture(leap.PIGTAIL);
   
   leap.start();
 }
@@ -123,7 +199,7 @@ public void gestureRecognized(String gesture) {
 </pre>
 
 License
-=======
+-------
 <pre>
 LeapMotionP5 library for Processing.
 Copyright (c) 2012-2013 held jointly by the individual authors.

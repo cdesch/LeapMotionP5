@@ -24,45 +24,26 @@ package com.onformative.leap.gestures;
  * obtaining this software and related tools. This software is subject to copyright.
  */
 
-import com.leapmotion.leap.Finger;
-import com.leapmotion.leap.Hand;
 import com.onformative.leap.LeapMotionP5;
 
-/**
- * TODO: Implement to check for a minimal distance to be performed, when the gesture is triggered
- * 
- * @author Marcel Schwittlick
- * 
- */
-public class SwipeLeftGesture extends Gesture {
+public class OnHandEnter extends Gesture {
 
-  public SwipeLeftGesture(LeapMotionP5 leap) {
+  public OnHandEnter(LeapMotionP5 leap) {
     super(leap);
+    // TODO Auto-generated constructor stub
   }
 
-  /**
-   * checks if the gesture has been performed
-   * 
-   * @return boolean returns true, if the gesture has been performed
-   */
   public boolean check() {
-
-    for (Hand hand : leap.getHandList()) {
-      for (Finger finger : leap.getFingerList(hand)) {
-        if (leap.getVelocity(finger).x < -velocityThreshold) {
-          return true;
-        }
-      }
+    int lastFrameHandCount = leap.getFingerList(leap.getLastFrame()).size();
+    int currentFrameHandCount = leap.getFingerList(leap.getFrame()).size();
+    if (lastFrameHandCount < currentFrameHandCount) {
+      return true;
     }
-    return false;
 
+    return false;
   }
 
-  /**
-   * 
-   * @return
-   */
   public String getShortname() {
-    return LeapMotionP5.SWIPE_LEFT;
+    return LeapMotionP5.ON_HAND_ENTER;
   }
 }

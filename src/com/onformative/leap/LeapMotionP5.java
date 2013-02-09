@@ -28,13 +28,13 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PVector;
 
 import com.leapmotion.leap.Controller;
 import com.leapmotion.leap.Finger;
 import com.leapmotion.leap.Frame;
 import com.leapmotion.leap.Hand;
-import com.leapmotion.leap.Matrix;
 import com.leapmotion.leap.Pointable;
 import com.leapmotion.leap.Tool;
 import com.leapmotion.leap.Vector;
@@ -45,9 +45,6 @@ import com.onformative.leap.gestures.GestureHandler;
  * 
  * @author Marcel Schwittlick
  * @modified 04.02.2013
- * 
- *           the main class of the library. this class has to be instanciated in order to access
- *           leap data within processing
  * 
  */
 public class LeapMotionP5 {
@@ -67,6 +64,35 @@ public class LeapMotionP5 {
   private float LEAP_WIDTH = 200.0f; // in mm
   private float LEAP_HEIGHT = 500.0f; // in mm
   private float LEAP_DEPTH = 200.0f; // in mm
+
+  public static final String CIRCLE = "circle";
+  public static final String TRIANGLE = "triangle";
+  public static final String RECTANGLE = "rectangle";
+  public static final String X = "x";
+  public static final String CHECK = "check";
+  public static final String CHARET = "charet";
+  public static final String ZIG_ZAG = "zig-zag";
+  public static final String ARROW = "arrow";
+  public static final String LEFT_SQUARE_BRACKET = "leftsquarebracket";
+  public static final String RIGHT_SQUARE_BRACKET = "rightsquarebracket";
+  public static final String LEFT_CURLY_BRACKET = "leftcurlybrace";
+  public static final String RIGHT_CURLY_BRACKET = "rightcurlybrace";
+  public static final String V = "v";
+  public static final String DELETE = "delete";
+  public static final String STAR = "star";
+  public static final String PIGTAIL = "pigtail";
+
+  public static final String SWIPE_LEFT = "swipeleft";
+  public static final String SWIPE_RIGHT = "swiperight";
+  public static final String SWIPE_UP = "swipeup";
+  public static final String SWIPE_DOWN = "swipedown";
+  public static final String PUSH = "push";
+  public static final String PULL = "pull";
+  public static final String ON_HAND_ENTER = "onhandenter";
+  public static final String ON_HAND_LEAVE = "onhandleave";
+
+  public static final String ON_FINGER_ENTER = "onfingerenter";
+  public static final String ON_FINGER_LEAVE = "onfingerleave";
 
   public GestureHandler gestures;
 
@@ -96,11 +122,7 @@ public class LeapMotionP5 {
    * 
    */
   public void start() {
-    try {
-      gestures.start();
-    } catch (Exception e) {
-      System.err.println("Gestures not initialized. Can not start gesture recognition.");
-    }
+    gestures.start();
   }
 
   /**
@@ -124,7 +146,7 @@ public class LeapMotionP5 {
     try {
       gestures.addGesture(gestureName);
     } catch (Exception e) {
-      System.err.println("Gestures not initialized. Can not add gestures.");
+      System.err.println("Can not add gestures.");
       System.err.println(e);
     }
   }
@@ -182,6 +204,10 @@ public class LeapMotionP5 {
       System.err.println(e);
       return new Frame();
     }
+  }
+
+  public Frame getLastFrame() {
+    return getFrames().get(getFrames().size() - 2);
   }
 
   /**
@@ -328,26 +354,12 @@ public class LeapMotionP5 {
     ArrayList<Hand> hands = new ArrayList<Hand>();
     if (frame.hands().empty() == false) {
       for (Hand hand : frame.hands()) {
-        hands.add(hand);
+        if (hand.isValid()) {
+          hands.add(hand);
+        }
       }
     }
     return hands;
-  }
-
-  /**
-   * 
-   * @return int the number of currently tracked hands
-   */
-  public int getHandCount() {
-    return getHandList().size();
-  }
-
-  /**
-   * 
-   * @return int the number of currently tracked hands
-   */
-  public int getHandCount(Frame frame) {
-    return getHandList(frame).size();
   }
 
   /**
@@ -372,7 +384,9 @@ public class LeapMotionP5 {
    * @return
    */
   public float getPitch(Hand hand) {
-    return (float) Math.toRadians(hand.palmPosition().pitch());
+    // return PApplet.map((float) Math.toDegrees(hand.direction().pitch()), 0, 22, 0,
+    // PConstants.TWO_PI);
+    return (float) Math.toDegrees(hand.direction().pitch());
   }
 
   /**
@@ -381,7 +395,8 @@ public class LeapMotionP5 {
    * @return
    */
   public float getRoll(Hand hand) {
-    return (float) Math.toRadians(hand.palmPosition().roll());
+    return -PApplet.map((float) Math.toDegrees(hand.direction().roll()), 0, 180, 0,
+        PConstants.TWO_PI);
   }
 
   /**
@@ -390,14 +405,44 @@ public class LeapMotionP5 {
    * @return
    */
   public float getYaw(Hand hand) {
-    return (float) Math.toRadians(hand.palmPosition().yaw());
+    return (float) Math.toDegrees(hand.direction().yaw());
   }
 
-
+  /**
+   * 
+   * @param hand
+   * @return
+   */
   public PVector getDirection(Hand hand) {
     return convertVectorToPVector(hand.direction());
   }
 
+  /**
+   * 
+   * @param hand
+   * @return
+   */
+  public PVector getPosition(Hand hand) {
+    return convertVectorToPVector(hand.palmPosition());
+  }
+
+  /**
+   * 
+   * @param hand
+   * @return
+   */
+  public PVector getNormal(Hand hand) {
+    return convertVectorToPVector(hand.palmNormal());
+  }
+
+  /**
+   * 
+   * @param hand
+   * @return
+   */
+  public PVector getVelocity(Hand hand) {
+    return convertVectorToPVector(hand.palmVelocity());
+  }
 
   /**
    * 
@@ -416,6 +461,11 @@ public class LeapMotionP5 {
     return fingers;
   }
 
+  /**
+   * 
+   * @param frame
+   * @return
+   */
   public ArrayList<Finger> getFingerList(Frame frame) {
     ArrayList<Finger> fingers = new ArrayList<Finger>();
 
@@ -430,22 +480,6 @@ public class LeapMotionP5 {
 
   /**
    * 
-   * @return
-   */
-  public int getFingerCount() {
-    return getFingerList().size();
-  }
-
-  /**
-   * 
-   * @return
-   */
-  public int getFingerCount(Frame frame) {
-    return getFingerList(frame).size();
-  }
-
-  /**
-   * 
    * @param hand
    * @return
    */
@@ -456,14 +490,6 @@ public class LeapMotionP5 {
       fingers.add(finger);
     }
     return fingers;
-  }
-
-  /**
-   * 
-   * @return
-   */
-  public int getFingerCount(Hand hand) {
-    return getFingerList(hand).size();
   }
 
   /**
@@ -495,13 +521,7 @@ public class LeapMotionP5 {
         pointable.tipPosition().getZ());
   }
 
-  public PVector getPosition(Hand hand) {
-    return convertVectorToPVector(hand.palmPosition());
-  }
 
-  public PVector getNormal(Hand hand) {
-    return convertVectorToPVector(hand.palmNormal());
-  }
 
   /**
    * 
@@ -530,12 +550,11 @@ public class LeapMotionP5 {
    * @return
    */
   public PVector getVelocity(Pointable pointable) {
+    // return convertVectorToPVector(pointable.tipVelocity());
     return convertVectorToPVector(pointable.tipVelocity());
   }
 
-  public PVector getVelocity(Hand hand) {
-    return convertVectorToPVector(hand.palmVelocity());
-  }
+
 
   /**
    * 
@@ -597,22 +616,6 @@ public class LeapMotionP5 {
     return pointables;
   }
 
-  /**
-   * 
-   * @return int the number of currently tracked pointables
-   */
-  public int getPointableCount() {
-    return getPointableList().size();
-  }
-
-  /**
-   * 
-   * @return int the number of currently tracked pointables
-   */
-  public int getPointableCount(Frame frame) {
-    return getPointableList(frame).size();
-  }
-
   public ArrayList<Pointable> getPointableList(Hand hand) {
     ArrayList<Pointable> pointables = new ArrayList<Pointable>();
 
@@ -621,14 +624,6 @@ public class LeapMotionP5 {
     }
 
     return pointables;
-  }
-
-  /**
-   * 
-   * @return int the number of currently tracked pointables
-   */
-  public int getPointableCount(Hand hand) {
-    return getPointableList(hand).size();
   }
 
   /**
@@ -682,22 +677,6 @@ public class LeapMotionP5 {
 
   /**
    * 
-   * @return
-   */
-  public int getToolCount() {
-    return getToolList().size();
-  }
-
-  /**
-   * 
-   * @return
-   */
-  public int getToolCount(Frame frame) {
-    return getToolList(frame).size();
-  }
-
-  /**
-   * 
    * @param hand
    * @return
    */
@@ -709,14 +688,6 @@ public class LeapMotionP5 {
     }
 
     return tools;
-  }
-
-  /**
-   * 
-   * @return
-   */
-  public int getToolCount(Hand hand) {
-    return getToolList(hand).size();
   }
 
   /**
@@ -733,9 +704,5 @@ public class LeapMotionP5 {
       }
     }
     return lastDetectedTool;
-  }
-
-  public Matrix getRotationsMatrix(Hand hand) {
-    return hand.rotationMatrix(currentFrame);
   }
 }
